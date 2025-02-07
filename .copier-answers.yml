@@ -13,9 +13,9 @@ include_benchmarks: false
 include_docs: true
 include_notebooks: false
 mypy_type_checking: basic
-package_name: tools_pearl
+package_name: utils_config
 project_license: MIT
-project_name: tools_pearl
+project_name: utils_config
 project_organization: uasal
 python_versions:
 - '3.9'

@@ -1,4 +1,4 @@
-from tools_pearl import example_module
+from utils_config import example_module
 
 
 def test_greetings() -> None:

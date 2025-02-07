@@ -1,6 +1,6 @@
 
 [project]
-name = "tools_pearl"
+name = "utils_config"
 license = {file = "LICENSE"}
 readme = "README.md"
 authors = [
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.urls]
-"Source Code" = "https://github.com/uasal/tools_pearl"
+"Source Code" = "https://github.com/uasal/utils_config"
 
 # On a mac, install optional dependencies with `pip install '.[dev]'` (include the single quotes)
 [project.optional-dependencies]
@@ -37,11 +37,12 @@ dev = [
 requires = [
     "setuptools>=62", # Used to build and package the Python project
     "setuptools_scm>=6.2", # Gets release version from git. Makes it available programmatically
+    "wheel"
 ]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
-write_to = "src/tools_pearl/_version.py"
+write_to = "src/utils_config/_version.py"
 
 [tool.pytest.ini_options]
 testpaths = [
@@ -102,7 +103,7 @@ ignore = [
     "UP028", # Allow yield in for loop
 ]
 [tool.setuptools.package-data]
-tools_pearl = ["py.typed"]
+utils_config = ["py.typed"]
 
 [tool.coverage.run]
-omit=["src/tools_pearl/_version.py"]
+omit=["src/utils_config/_version.py"]

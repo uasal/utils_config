@@ -14,10 +14,10 @@ sys.path.insert(0, os.path.abspath("../src/"))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "tools_pearl"
+project = "utils_config"
 copyright = "2024, uasal"
 author = "uasal"
-release = version("tools_pearl")
+release = version("utils_config")
 # for example take major/minor
 version = ".".join(release.split(".")[:2])
 

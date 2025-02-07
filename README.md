@@ -1,44 +1,70 @@
 
-# tools_pearl
+# utils_config
 
-[![Template](https://img.shields.io/badge/Template-LINCC%20Frameworks%20Python%20Project%20Template-brightgreen)](https://lincc-ppt.readthedocs.io/en/latest/)
+[![Read The Docs](https://img.shields.io/readthedocs/utils-config)](https://utils-config.readthedocs.io/)
 
-[![PyPI](https://img.shields.io/pypi/v/tools_pearl?color=blue&logo=pypi&logoColor=white)](https://pypi.org/project/tools_pearl/)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/uasal/tools_pearl/smoke-test.yml)](https://github.com/uasal/tools_pearl/actions/workflows/smoke-test.yml)
-[![Codecov](https://codecov.io/gh/uasal/tools_pearl/branch/main/graph/badge.svg)](https://codecov.io/gh/uasal/tools_pearl)
-[![Read The Docs](https://img.shields.io/readthedocs/tools-pearl)](https://tools-pearl.readthedocs.io/)
 
-This project was automatically generated using the LINCC-Frameworks 
-[python-project-template](https://github.com/lincc-frameworks/python-project-template).
+## Overview
+`utils_config` is a Python package that provides a utility for parsing TOML files. Currently there are 3 data formats this package makes available, "raw" which returns a dictionary of strings as whatever format they're stored in, "parsed" which reads .toml files and separates out 'value' and 'unit', and "unitless" which parses the input string and removes any units. See examples below for how to grab each format. 
 
-A repository badge was added to show that this project uses the python-project-template, however it's up to
-you whether or not you'd like to display it!
+## Installation Instructions
 
-For more information about the project template see the 
-[documentation](https://lincc-ppt.readthedocs.io/en/latest/).
-
-## Dev Guide - Getting Started
-
-Before installing any dependencies or writing code, it's a great idea to create a
-virtual environment. LINCC-Frameworks engineers primarily use `conda` to manage virtual
-environments. If you have conda installed locally, you can run the following to
-create and activate a new environment.
-
-```
->> conda create -n <env_name> python=3.10
->> conda activate <env_name>
+### **1. Clone the Repository**
+To get started, clone this repository using:
+```sh
+git clone git@github.com:uasal/utils_config.git
+cd utils_config
 ```
 
-Once you have created a new environment, you can install this project for local
-development using the following commands:
-
-```
->> ./.setup_dev.sh
->> conda install pandoc
+### **2. Install the Package**
+Once inside the project directory, install the package using:
+```sh
+pip install .
 ```
 
-Notes:
-1. `./.setup_dev.sh` will initialize pre-commit for this local repository, so
-   that a set of tests will be run prior to completing a local commit. For more
-   information, see the Python Project Template documentation on 
-   [pre-commit](https://lincc-ppt.readthedocs.io/en/latest/practices/precommit.html)
+## Usage and Verifying the Installation
+Once installed, you can import `ConfigLoader` and use the 3 input arguments of the class as shown below. Keep in mind your path will be relative to where you're running the script. Below is an example of using this tool to parse a toml config found inside config_pearl.
+
+### Raw
+```python
+from tools_uasal import ConfigLoader
+
+loader = ConfigLoader("config_pearl/config_pearl/config","raw",recursive=True) #relative path from where you run the tool
+config_parsed = loader.load_configs()
+print(config_parsed["observatory"]["pointing"]["jitter_rms"])
+```
+
+## Troubleshooting
+If you encounter issues, try the following:
+- Ensure you are running Python 3.12
+- Check that `pip list | grep utils_config` confirms the package is installed
+- Uninstall and reinstall using:
+  ```sh
+  pip uninstall utils_config
+  pip install .
+  ```
+
+If you'd like to print the whole dictionary in all 3 formats for a sanity check, you can borrow the following 
+```python
+from utils_config import ConfigLoader
+import json
+
+config_raw = ConfigLoader("config_pearl/config_pearl/config","raw").load_configs() 
+config_parsed = ConfigLoader("config_pearl/config_pearl/config","parsed").load_configs()
+config_unitless = ConfigLoader("config_pearl/config_pearl/config","unitless").load_configs()
+
+def print_dict(title, data):
+    """Print pearl dictionary for all 3 formats -- json formatted!"""
+    print(json.dumps(data, indent=4, sort_keys=True))
+
+if __name__ == "__main__":
+    print("\n===========   {raw}   ===========")
+    print_dict("Raw Astropy TOML Data", config_raw)
+    print("\n===========  {parsed}  ===========")
+    print_dict("Parsed TOML Data (Value + Unit)", config_parsed)
+    print("\n=========== {unitless} ===========")
+    print_dict("Values-Only TOML Data", config_unitless)
+```
+
+
+
