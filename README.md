@@ -27,7 +27,7 @@ Once installed, you can import `ConfigLoader` and use the 3 input arguments of t
 
 ### Raw
 ```python
-from tools_uasal import ConfigLoader
+from utils_config import ConfigLoader
 
 loader = ConfigLoader("config_pearl/config_pearl/config","raw",recursive=True) #relative path from where you run the tool
 config_parsed = loader.load_configs()
