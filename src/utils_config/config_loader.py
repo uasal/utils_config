@@ -38,7 +38,7 @@ class ConfigLoader:
                 self.config_data[file_key] = self._process_config(config)
 
             except Exception as e:
-                raise ValueError(f"Error parsing {toml_file}: {e}")
+                raise ValueError(f"Error parsing {toml_file}: {e}") from e
 
         return self.config_data
 
