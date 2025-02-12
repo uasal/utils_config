@@ -29,7 +29,7 @@ Once installed, you can import `ConfigLoader` and use the 3 input arguments of t
 ```python
 from utils_config import ConfigLoader
 
-loader = ConfigLoader("config_pearl/config_pearl/config","raw",recursive=True) #relative path from where you run the tool
+loader = ConfigLoader("config_pearl/configs","raw",recursive=True) #relative path from where you run the tool
 config_parsed = loader.load_configs()
 print(config_parsed["observatory"]["pointing"]["jitter_rms"])
 ```
@@ -49,9 +49,9 @@ If you'd like to print the whole dictionary in all 3 formats for a sanity check,
 from utils_config import ConfigLoader
 import json
 
-config_raw = ConfigLoader("config_pearl/config_pearl/config","raw").load_configs() 
-config_parsed = ConfigLoader("config_pearl/config_pearl/config","parsed").load_configs()
-config_unitless = ConfigLoader("config_pearl/config_pearl/config","unitless").load_configs()
+config_raw = ConfigLoader("config_pearl/configs","raw").load_configs() 
+config_parsed = ConfigLoader("config_pearl/configs","parsed").load_configs()
+config_unitless = ConfigLoader("config_pearl/configs","unitless").load_configs()
 
 def print_dict(title, data):
     """Print pearl dictionary for all 3 formats -- json formatted!"""
