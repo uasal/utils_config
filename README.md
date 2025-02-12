@@ -35,3 +35,9 @@ From the above example, adjusting the second argument should result in the follo
 - `ConfigLoader("config_pearl/configs","parsed")` -> `{'value': 0.01, 'unit': 'arcsecond'}`
 - `ConfigLoader("config_pearl/configs","raw")` -> `10e-3arcsecond`
 
+## For Developers
+This package is based off the LINCC framework which utilizes Ruff for linting, pytest for unit tests and coverage, and sphinx for auto doc generation. If planning on making a commit, there are a few packages you need to install first:
+
+```
+pip install mypy sphinx pytest types-toml sphinx-autoapi sphinx-copybutton sphinx-rtd-theme pytest-cov
+```
