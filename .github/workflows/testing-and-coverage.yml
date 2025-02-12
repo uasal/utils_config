@@ -5,7 +5,8 @@ name: Unit test and code coverage
 
 on:
   push:
-    branches: "**"
+    branches:
+    - '**'
 
 jobs:
   build:

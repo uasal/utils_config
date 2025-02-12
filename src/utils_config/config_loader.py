@@ -1,5 +1,6 @@
 import re
 from pathlib import Path
+from typing import Any
 
 import toml
 
@@ -16,7 +17,7 @@ class ConfigLoader:
         self.base_dir = Path(base_dir).resolve()
         self.mode = mode.lower()
         self.recursive = recursive
-        self.config_data = {}
+        self.config_data: dict[str, dict[str, Any]] = {}
 
         if self.mode not in {"raw", "unitless", "parsed"}:
             raise ValueError("Invalid mode. Choose from 'raw', 'unitless', or 'parsed'.")
