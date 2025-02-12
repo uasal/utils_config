@@ -1,1 +1,5 @@
 toml
+sphinx
+sphinx-autoapi
+sphinx-copybutton
+sphinx-rtd-theme

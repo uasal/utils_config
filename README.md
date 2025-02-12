@@ -3,10 +3,9 @@
 ## Overview
 `utils_config` is a Python package that provides a utility for parsing TOML files. Currently there are 3 data formats this package makes available, "raw" which returns a dictionary of strings as whatever format they're stored in, "parsed" which reads .toml files and separates out 'value' and 'unit', and "unitless" which parses the input string and removes any units. See examples below for how to grab each format. 
 
-## Installation Instructions
+## Installation
 
-### **1. Clone the Repository**
-To get started, clone this repository using:
+### **1. Clone the Repoistory**
 ```sh
 git clone git@github.com:uasal/utils_config.git
 cd utils_config
