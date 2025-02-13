@@ -18,8 +18,23 @@ Once inside the project directory, install the package using:
 pip install .
 ```
 
+### **For Pip-only installation**
+For those who simply want to use the tool and not clone the repository:
+```sh
+pip install git+ssh://git@github.com/uasal/utils_config.git
+```
+
 ## Usage and Verifying the Installation
-Once installed, you can import `ConfigLoader` and use the 3 input arguments of the class as shown below. Keep in mind your path will be relative to where you're running the script. Below is an example of using this tool to parse a toml config found inside config_pearl.
+To verify the installed version matches the latest release: 
+```sh
+pip show utils_config
+```
+
+If you have cloned the repo and your version is out of date, make sure you are on the `develop` branch and pulled prior to reinstalling via pip. You may have to do this command at the root of the utils_config repo: 
+```sh
+pip install --no-cache-dir --force-reinstall .
+```
+For pip-only installations simply run the install command again. Once installed, your python code should use an import `ConfigLoader` and then be able to use the 3 input arguments as shown below. Keep in mind your path will be relative to where you're running the script. Below is an example of using this tool to parse a toml config inside config_pearl.
 
 ### Raw
 ```python
