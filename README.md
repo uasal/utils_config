@@ -18,6 +18,12 @@ Once inside the project directory, install the package using:
 pip install .
 ```
 
+### **For Pip-only installation**
+For those who simply want to use the tool and not clone the repository:
+```sh
+pip install git+ssh://git@github.com/uasal/utils_config.git
+```
+
 ## Usage and Verifying the Installation
 Once installed, you can import `ConfigLoader` and use the 3 input arguments of the class as shown below. Keep in mind your path will be relative to where you're running the script. Below is an example of using this tool to parse a toml config found inside config_pearl.
 
