@@ -1,9 +1,9 @@
 
 [project]
 name = "utils_config"
-description = "UASAL utility function repository for parsing data and configs"
-license = {file = "LICENSE"}
+license = { text = "GNU GENERAL PUBLIC LICENSE - Verison 3" }
 readme = "README.md"
+description = "Utility functions intended for UASAL and Steward Observatory data processing"
 authors = [
     { name = "uasal", email = "adamschilperoort@gmail.com" }
 ]
@@ -25,7 +25,9 @@ dependencies = [
 
 [project.urls]
 "Source Code" = "https://github.com/uasal/utils_config"
-Homepage = "https://github.com/uasal/utils_config/blob/main/README.md"
+Homepage = "https://github.com/uasal/config_pearl/blob/main/README.md"
+Changelog = "https://github.com/uasal/config_pearl/blob/main/CHANGELOG.md"
+Repository = "https://github.com/uasal/config_pearl"
 
 # On a mac, install optional dependencies with `pip install '.[dev]'` (include the single quotes)
 [project.optional-dependencies]
