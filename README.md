@@ -5,7 +5,7 @@
 
 ## Installation
 
-### **1. Clone the Repoistory**
+### **1. Clone the Repository**
 To get started, clone this repository using:
 ```sh
 git clone git@github.com:uasal/utils_config.git
