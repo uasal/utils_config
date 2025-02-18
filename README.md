@@ -34,21 +34,21 @@ If you have cloned the repo and your version is out of date, make sure you are o
 ```sh
 pip install --no-cache-dir --force-reinstall .
 ```
-For pip-only installations simply run the install command again. Once installed, your python code should use an import `ConfigLoader` and then be able to use the 3 input arguments as shown below. Keep in mind your path will be relative to where you're running the script. Below is an example of using this tool to parse a toml config inside config_pearl.
+For pip-only installations simply run the install command again. Once installed, your python code should use an import `ConfigLoader` and then be able to use the 3 input arguments as shown below. Keep in mind your path will be relative to where you're running the script. Below is an example of using this tool to parse a toml config inside config_stp, and will be used similarly when using other config repos.
 
 ### Raw
 ```python
 from utils_config import ConfigLoader
 
-loader = ConfigLoader("config_pearl/configs","raw",recursive=True) #relative path from where you run the tool
+loader = ConfigLoader("config_stp/configs","raw",recursive=True) #relative path from where you run the tool
 config_parsed = loader.load_configs()
 print(config_parsed["observatory"]["pointing"]["jitter_rms"])
 ```
 
 From the above example, adjusting the second argument should result in the following data formats returned:
-- `ConfigLoader("config_pearl/configs","unitless")` -> `0.01`
-- `ConfigLoader("config_pearl/configs","parsed")` -> `{'value': 0.01, 'unit': 'arcsecond'}`
-- `ConfigLoader("config_pearl/configs","raw")` -> `10e-3arcsecond`
+- `ConfigLoader("config_stp/configs","unitless")` -> `0.01`
+- `ConfigLoader("config_stp/configs","parsed")` -> `{'value': 0.01, 'unit': 'arcsecond'}`
+- `ConfigLoader("config_stp/configs","raw")` -> `10e-3arcsecond`
 
 ## For Developers
 This package is based off the LINCC framework which utilizes Ruff for linting, pytest for unit tests and coverage, and sphinx for auto doc generation. If planning on making a commit, there are a few packages you need to install first:

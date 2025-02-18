@@ -25,9 +25,9 @@ dependencies = [
 
 [project.urls]
 "Source Code" = "https://github.com/uasal/utils_config"
-Homepage = "https://github.com/uasal/config_pearl/blob/main/README.md"
-Changelog = "https://github.com/uasal/config_pearl/blob/main/CHANGELOG.md"
-Repository = "https://github.com/uasal/config_pearl"
+Homepage = "https://github.com/uasal/utils_config/blob/main/README.md"
+Changelog = "https://github.com/uasal/utils_config/blob/main/CHANGELOG.md"
+Repository = "https://github.com/uasal/utils_config"
 
 # On a mac, install optional dependencies with `pip install '.[dev]'` (include the single quotes)
 [project.optional-dependencies]
