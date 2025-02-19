@@ -1,8 +1,5 @@
 <!-- 
-Thank you for your contribution to the repo :)
-
-Pull Request (PR) Instructions:
-Provide a general summary of your changes in the Title above. Fill out each section of the template, and replace the space with an `x` in all the boxes that apply. If you're unsure about any of these, don't hesitate to ask. We're here to help! Once you are satisfied with the pull request, click the "Create pull request" button to submit it for review.
+Please provide a general summary of your changes in the Title. Fill out each section of the template, and replace the space with an `x` in all the boxes that apply. Once you are satisfied with the pull request, click the "Create pull request" button to submit it for review.
 
 Before submitting this PR, please ensure that your input and responses are entered in the designated space provided below each section to keep all project-related information organized and easily accessible.
  
