@@ -5,23 +5,16 @@
 
 ## Installation
 
-### **1. Clone the Repository**
-To get started, clone this repository using:
+### Pip-based
+```sh
+pip install "git+https://github.com/uasal/utils_config.git@develop"
+```
+
+### Install via cloning the repo
 ```sh
 git clone git@github.com:uasal/utils_config.git
 cd utils_config
-```
-
-### **2. Install the Package**
-Once inside the project directory, install the package using:
-```sh
 pip install .
-```
-
-### **For Pip-only installation**
-For those who simply want to use the tool and not clone the repository:
-```sh
-pip install git+ssh://git@github.com/uasal/utils_config.git
 ```
 
 ## Usage and Verifying the Installation
@@ -30,25 +23,26 @@ To verify the installed version matches the latest release:
 pip show utils_config
 ```
 
-If you have cloned the repo and your version is out of date, make sure you are on the `develop` branch and pulled prior to reinstalling via pip. You may have to do this command at the root of the utils_config repo: 
+If you have cloned the repo and your version is out of date, make sure you are on the `develop` branch and pulled prior to reinstalling via pip. Do the following command in the root of utils_config
 ```sh
 pip install --no-cache-dir --force-reinstall .
 ```
-For pip-only installations simply run the install command again. Once installed, your python code should use an import `ConfigLoader` and then be able to use the 3 input arguments as shown below. Keep in mind your path will be relative to where you're running the script. Below is an example of using this tool to parse a toml config inside config_stp, and will be used similarly when using other config repos.
+
+For pip-only installations simply run the install command again. Once installed, your python code should import `ConfigLoader` and use the 3 input arguments to the class as shown below. Keep in mind your path will be relative to where you're running the script. Below is an example of using this tool to parse a toml config inside config_stp, and will be used similarly with other config repos.
 
 ### Raw
 ```python
 from utils_config import ConfigLoader
 
-loader = ConfigLoader("config_stp/configs","raw",recursive=True) #relative path from where you run the tool
+loader = ConfigLoader("config_stp/configs","raw",recursive=True) #relative path 
 config_parsed = loader.load_configs()
 print(config_parsed["observatory"]["pointing"]["jitter_rms"])
 ```
 
 From the above example, adjusting the second argument should result in the following data formats returned:
-- `ConfigLoader("config_stp/configs","unitless")` -> `0.01`
-- `ConfigLoader("config_stp/configs","parsed")` -> `{'value': 0.01, 'unit': 'arcsecond'}`
-- `ConfigLoader("config_stp/configs","raw")` -> `10e-3arcsecond`
+- `ConfigLoader("config_stp/configs","unitless")` -> `0.001`
+- `ConfigLoader("config_stp/configs","parsed")` -> `{'value': 0.001, 'unit': 'arcsecond'}`
+- `ConfigLoader("config_stp/configs","raw")` -> `10e-4arcsecond`
 
 ## For Developers
 This package is based off the LINCC framework which utilizes Ruff for linting, pytest for unit tests and coverage, and sphinx for auto doc generation. If planning on making a commit, there are a few packages you need to install first:
