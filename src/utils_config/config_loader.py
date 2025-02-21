@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any
 
 import toml
-
+import astropy.units as u  
 
 class ConfigLoader:
     """Class to load and process configuration files."""
@@ -56,12 +56,12 @@ class ConfigLoader:
         """Recursively processes the configuration dictionary to parse units."""
         if isinstance(config, dict):
             return {key: self._parse_units(value, values_only) for key, value in config.items()}
-        if isinstance(config, list):
+        elif isinstance(config, list):
             return [self._parse_units(item, values_only) for item in config]
         elif isinstance(config, str):
             return self._extract_value_and_unit(config, values_only)
         else:
-            return config  # Keep numbers, booleans, and other data types unchanged
+            return config  # Keep numbers, booleans, datetime objects, etc. unchanged
 
     def _extract_value_and_unit(self, value, values_only: bool):
         """
@@ -75,3 +75,42 @@ class ConfigLoader:
             num, unit = match.groups()
             return float(num) if values_only else {"value": float(num), "unit": unit} if unit else float(num)
         return value  # Return as-is if it doesn't match the expected format
+
+    def infer_unit_type(self) -> str:
+        """
+        Infers the unit type in the loaded configuration.
+
+        This method walks through self.config_data and checks each dictionary
+        that appears to be a unitized value (i.e. contains both 'value' and 'unit').
+        It tries to construct an astropy Unit from the unit string.
+        
+        Returns:
+            "astropy" if at least one unit is found and all such units are valid Astropy units.
+            "unknown" if any unit is invalid or if no unit entries are found.
+        """
+        unit_valid = True
+        found_units = False
+
+        def _check_units(data):
+            nonlocal unit_valid, found_units
+            if isinstance(data, dict):
+                if "value" in data and "unit" in data:
+                    found_units = True
+                    unit_str = data["unit"]
+                    try:
+                        u.Unit(unit_str)
+                    except Exception:
+                        unit_valid = False
+                for value in data.values():
+                    _check_units(value)
+            elif isinstance(data, list):
+                for item in data:
+                    _check_units(item)
+
+        for config in self.config_data.values():
+            _check_units(config)
+
+        # If at least one unit was found and all were valid, return "astropy".
+        # Otherwise, return "unknown".
+        return "astropy" if found_units and unit_valid else "unknown"
+
