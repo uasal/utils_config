@@ -56,6 +56,8 @@ class ConfigLoader:
         """Recursively processes the configuration dictionary to parse units."""
         if isinstance(config, dict):
             return {key: self._parse_units(value, values_only) for key, value in config.items()}
+        if isinstance(config, list):
+            return [self._parse_units(item, values_only) for item in config]
         elif isinstance(config, str):
             return self._extract_value_and_unit(config, values_only)
         else:
