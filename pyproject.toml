@@ -21,7 +21,7 @@ dependencies = [
     "toml",
     "pytest",
     "pytest-cov",
-    "astropy.units"
+    "astropy"
 ]
 
 [project.urls]
