@@ -20,7 +20,8 @@ requires-python = ">=3.9"
 dependencies = [
     "toml",
     "pytest",
-    "pytest-cov"
+    "pytest-cov",
+    "astropy"
 ]
 
 [project.urls]

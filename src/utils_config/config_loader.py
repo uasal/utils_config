@@ -1,7 +1,8 @@
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 
+import astropy.units as u
 import toml
 
 
@@ -56,22 +57,62 @@ class ConfigLoader:
         """Recursively processes the configuration dictionary to parse units."""
         if isinstance(config, dict):
             return {key: self._parse_units(value, values_only) for key, value in config.items()}
-        if isinstance(config, list):
+        elif isinstance(config, list):
             return [self._parse_units(item, values_only) for item in config]
         elif isinstance(config, str):
             return self._extract_value_and_unit(config, values_only)
         else:
-            return config  # Keep numbers, booleans, and other data types unchanged
+            return config  # Keep numbers, booleans, datetime objects, etc. unchanged
 
     def _extract_value_and_unit(self, value, values_only: bool):
         """
         Extracts numerical value and unit from a string.
         Example:
-        - '10e-3arcsecond' → {'value': 1.0e-2, 'unit': 'arcsecond'}
-        - '0.024Kelvin/hour' → {'value': 0.024, 'unit': 'Kelvin/hour'}
+          - '10e-3arcsecond' → {'value': 1.0e-2, 'unit': 'arcsecond'}
+          - '0.024Kelvin/hour' → {'value': 0.024, 'unit': 'Kelvin/hour'}
         """
         match = re.match(r"([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)([a-zA-Z/%µ]+$)", value.strip())
         if match:
             num, unit = match.groups()
             return float(num) if values_only else {"value": float(num), "unit": unit} if unit else float(num)
         return value  # Return as-is if it doesn't match the expected format
+
+    def validate_astropy(self) -> List[str]:
+        """
+        Validates that every unit in the loaded configuration is a valid Astropy unit.
+
+        This method walks through self.config_data and, for every dictionary that
+        appears to represent a unitized value (i.e. contains both 'value' and 'unit'),
+        it attempts to construct an Astropy Unit from the unit string.
+
+        Any invalid units are recorded with a message indicating the file and the key path
+        within that file.
+
+        Returns:
+            A list of error messages. An empty list indicates all units conform to Astropy.
+        """
+        errors = []
+
+        def _check_units(data, path, file_key):
+            if isinstance(data, dict):
+                # Check if this dict looks like a unitized value.
+                if "value" in data and "unit" in data:
+                    unit_str = data["unit"]
+                    try:
+                        u.Unit(unit_str)
+                    except Exception as e:
+                        # Record error with file key and path within the configuration.
+                        path_str = " -> ".join(str(p) for p in path)
+                        errors.append(f"{file_key}' -> '{path_str}': invalid unit '{unit_str}'")
+                # Recurse into each key/value pair.
+                for key, value in data.items():
+                    _check_units(value, path + [key], file_key)
+            elif isinstance(data, list):
+                for idx, item in enumerate(data):
+                    _check_units(item, path + [f"[{idx}]"], file_key)
+            # Other data types are ignored.
+
+        for file_key, config in self.config_data.items():
+            _check_units(config, [], file_key)
+
+        return errors
