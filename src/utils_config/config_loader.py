@@ -1,6 +1,6 @@
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 
 import toml
 import astropy.units as u  
@@ -67,50 +67,57 @@ class ConfigLoader:
         """
         Extracts numerical value and unit from a string.
         Example:
-        - '10e-3arcsecond' → {'value': 1.0e-2, 'unit': 'arcsecond'}
-        - '0.024Kelvin/hour' → {'value': 0.024, 'unit': 'Kelvin/hour'}
+          - '10e-3arcsecond' → {'value': 1.0e-2, 'unit': 'arcsecond'}
+          - '0.024Kelvin/hour' → {'value': 0.024, 'unit': 'Kelvin/hour'}
         """
-        match = re.match(r"([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)([a-zA-Z/%µ]+$)", value.strip())
+        match = re.match(
+            r"([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)([a-zA-Z/%µ]+$)",
+            value.strip()
+        )
         if match:
             num, unit = match.groups()
             return float(num) if values_only else {"value": float(num), "unit": unit} if unit else float(num)
         return value  # Return as-is if it doesn't match the expected format
 
-    def infer_unit_type(self) -> str:
+    def validate_astropy(self) -> List[str]:
         """
-        Infers the unit type in the loaded configuration.
-
-        This method walks through self.config_data and checks each dictionary
-        that appears to be a unitized value (i.e. contains both 'value' and 'unit').
-        It tries to construct an astropy Unit from the unit string.
+        Validates that every unit in the loaded configuration is a valid Astropy unit.
+        
+        This method walks through self.config_data and, for every dictionary that 
+        appears to represent a unitized value (i.e. contains both 'value' and 'unit'), 
+        it attempts to construct an Astropy Unit from the unit string.
+        
+        Any invalid units are recorded with a message indicating the file and the key path
+        within that file.
         
         Returns:
-            "astropy" if at least one unit is found and all such units are valid Astropy units.
-            "unknown" if any unit is invalid or if no unit entries are found.
+            A list of error messages. An empty list indicates all units conform to Astropy.
         """
-        unit_valid = True
-        found_units = False
+        errors = []
 
-        def _check_units(data):
-            nonlocal unit_valid, found_units
+        def _check_units(data, path, file_key):
             if isinstance(data, dict):
+                # Check if this dict looks like a unitized value.
                 if "value" in data and "unit" in data:
-                    found_units = True
                     unit_str = data["unit"]
                     try:
                         u.Unit(unit_str)
-                    except Exception:
-                        unit_valid = False
-                for value in data.values():
-                    _check_units(value)
+                    except Exception as e:
+                        # Record error with file key and path within the configuration.
+                        path_str = " -> ".join(str(p) for p in path)
+                        errors.append(
+                            f"In file '{file_key}', at path '{path_str}': unit '{unit_str}' is invalid ({e})"
+                        )
+                # Recurse into each key/value pair.
+                for key, value in data.items():
+                    _check_units(value, path + [key], file_key)
             elif isinstance(data, list):
-                for item in data:
-                    _check_units(item)
+                for idx, item in enumerate(data):
+                    _check_units(item, path + [f"[{idx}]"], file_key)
+            # Other data types are ignored.
 
-        for config in self.config_data.values():
-            _check_units(config)
+        for file_key, config in self.config_data.items():
+            _check_units(config, [], file_key)
 
-        # If at least one unit was found and all were valid, return "astropy".
-        # Otherwise, return "unknown".
-        return "astropy" if found_units and unit_valid else "unknown"
+        return errors
 
