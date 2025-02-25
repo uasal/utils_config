@@ -106,7 +106,7 @@ class ConfigLoader:
                         # Record error with file key and path within the configuration.
                         path_str = " -> ".join(str(p) for p in path)
                         errors.append(
-                            f"In file '{file_key}', at path '{path_str}': unit '{unit_str}' is invalid ({e})"
+                            f"{file_key}' -> '{path_str}': invalid unit '{unit_str}'"
                         )
                 # Recurse into each key/value pair.
                 for key, value in data.items():
