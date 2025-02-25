@@ -1,6 +1,6 @@
 import re
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, Union
 
 import astropy.units as u
 import toml
@@ -77,7 +77,7 @@ class ConfigLoader:
             return float(num) if values_only else {"value": float(num), "unit": unit} if unit else float(num)
         return value  # Return as-is if it doesn't match the expected format
 
-    def validate_astropy(self) -> List[str]:
+    def validate_astropy(self) -> Union[bool, List[str]]:
         """
         Validates that every unit in the loaded configuration is a valid Astropy unit.
 
@@ -115,4 +115,4 @@ class ConfigLoader:
         for file_key, config in self.config_data.items():
             _check_units(config, [], file_key)
 
-        return errors
+        return True if not errors else errors
