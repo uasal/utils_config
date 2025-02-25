@@ -115,4 +115,4 @@ class ConfigLoader:
         for file_key, config in self.config_data.items():
             _check_units(config, [], file_key)
 
-        return errors
+        return True if not errors else errors
