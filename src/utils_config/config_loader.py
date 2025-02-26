@@ -103,7 +103,7 @@ class ConfigLoader:
                     except Exception as e:
                         # Record error with file key and path within the configuration.
                         path_str = " -> ".join(str(p) for p in path)
-                        errors.append(f"{file_key}' -> '{path_str}': invalid unit '{unit_str}'")
+                        errors.append(f"{file_key}.toml -> {path_str}: invalid unit '{unit_str}'")
                 # Recurse into each key/value pair.
                 for key, value in data.items():
                     _check_units(value, path + [key], file_key)
