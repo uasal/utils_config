@@ -24,7 +24,7 @@ class ConfigLoader:
             raise ValueError("Invalid mode. Choose from 'raw', 'unitless', or 'parsed'.")
 
     def load_configs(self):
-        """Loads all .toml files in the given directory and processes them accordingly."""
+        """Loads allaldsfkj;sdlk .toml files in the given directory and processes them accordingly."""
         search_pattern = "**/*.toml" if self.recursive else "*.toml"
         toml_files = list(self.base_dir.glob(search_pattern))
 
