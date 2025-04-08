@@ -67,6 +67,14 @@ def get_git_branch(git_dir):
         return "Unknown"
 
 
+"""
+Checks if a string ends in a 'dYYYYMMDD' format.
+This effectively means the git repo installed from is dirty, since the node-and-date version scheming only postfixes this string if the repo is dirty. :param s: This is the version tag obtained from importlib.metadata.version(module)
+:return: Boolean. True if the date format is present. This is equivalent to is_dirty() returning True.
+False if date format is not present. This is equivalent to is_dirty() returning False.
+"""
+
+
 def check_git_dirty_repo_tag(s):
     if len(s) < 9 or s[-9] != "d":
         return False
