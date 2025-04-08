@@ -4,6 +4,7 @@ import subprocess
 import types
 from datetime import datetime
 
+# Defaults are assumed. Can override by adding modules_to_check to check_imports_and_versions call
 DEFAULT_MODULES = ["config_stp", "config_um", "config_stp_wcc", "config_stp_esc", "etc_wcc", "etc_esc"]
 
 
@@ -77,6 +78,8 @@ def check_git_dirty_repo_tag(s):
 
 
 def pretty_print_table(data):
+    # is_dirty()? underscore represents a function name, but Installed_Version underscore represents a space.
+    # This is formatted this way because we use stripping functions for the table read function
     headers = ["Module", "Imported", "Installed_Version", "Branch", "is_dirty()?"]
     widths = [14, 8, 20, 32, 11]
 
