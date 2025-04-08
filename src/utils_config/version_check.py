@@ -1,20 +1,14 @@
 import importlib
-import types
 import os
 import subprocess
+import types
 from datetime import datetime
 
-DEFAULT_MODULES = [
-    "config_stp",
-    "config_um",
-    "config_stp_wcc",
-    "config_stp_esc",
-    "etc_wcc"
-]
+DEFAULT_MODULES = ["config_stp", "config_um", "config_stp_wcc", "config_stp_esc", "etc_wcc"]
 
 
 def imports(g_imports):
-    return [val.__name__.split('.')[0] for name, val in g_imports if isinstance(val, types.ModuleType)]
+    return [val.__name__.split(".")[0] for name, val in g_imports if isinstance(val, types.ModuleType)]
 
 
 def check_imports_and_versions(g_imports, modules_to_check=None, verbose=False):
@@ -23,18 +17,12 @@ def check_imports_and_versions(g_imports, modules_to_check=None, verbose=False):
 
     imported_modules = imports(g_imports)
 
-    data = {
-        "Module": [],
-        "Imported": [],
-        "Installed_Version": [],
-        "Branch": [],
-        "is_dirty()?": []
-    }
+    data = {"Module": [], "Imported": [], "Installed_Version": [], "Branch": [], "is_dirty()?": []}
 
     for module in modules_to_check:
         imported = module in imported_modules
-        version = 'Not_Installed'
-        branch = 'N/A'
+        version = "Not_Installed"
+        branch = "N/A"
 
         if importlib.util.find_spec(module):
             try:
@@ -69,7 +57,9 @@ def get_git_branch(git_dir):
     try:
         result = subprocess.run(
             ["git", "-C", git_dir, "rev-parse", "--abbrev-ref", "HEAD"],
-            capture_output=True, text=True, check=True
+            capture_output=True,
+            text=True,
+            check=True,
         )
         return result.stdout.strip()
     except subprocess.CalledProcessError:
@@ -77,10 +67,10 @@ def get_git_branch(git_dir):
 
 
 def check_git_dirty_repo_tag(s):
-    if len(s) < 9 or s[-9] != 'd':
+    if len(s) < 9 or s[-9] != "d":
         return False
     try:
-        datetime.strptime(s[-8:], '%Y%m%d')
+        datetime.strptime(s[-8:], "%Y%m%d")
         return True
     except ValueError:
         return False
@@ -102,7 +92,6 @@ def pretty_print_table(data):
             str(data["Imported"][i]),
             data["Installed_Version"][i],
             data["Branch"][i],
-            str(data["is_dirty()?"][i])
+            str(data["is_dirty()?"][i]),
         ]
         print(format_row(row))
-
