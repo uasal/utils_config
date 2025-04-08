@@ -42,7 +42,7 @@ def check_imports_and_versions(g_imports, modules_to_check=None, verbose=False):
         data["is_dirty()?"].append(check_git_dirty_repo_tag(version))
 
     pretty_print_table(data)
-    return None  # No return value
+    return None
 
 
 def find_git_root(path):
