@@ -12,7 +12,7 @@ def imports(g_imports):
     return [val.__name__.split(".")[0] for name, val in g_imports if isinstance(val, types.ModuleType)]
 
 
-def check_imports_and_versions(g_imports, modules_to_check=None, verbose=False):
+def check_imports_and_versions(g_imports, modules_to_check=None, verbose=False, output_file=None):
     if modules_to_check is None:
         modules_to_check = DEFAULT_MODULES
 
@@ -43,6 +43,12 @@ def check_imports_and_versions(g_imports, modules_to_check=None, verbose=False):
         data["is_dirty()?"].append(check_git_dirty_repo_tag(version))
 
     pretty_print_table(data)
+
+    if output_file:
+        write_pretty_table_to_file(output_file, data)
+        if verbose:
+            print(f"Table written to: {output_file}")
+
     return None
 
 
@@ -69,7 +75,8 @@ def get_git_branch(git_dir):
 
 """
 Checks if a string ends in a 'dYYYYMMDD' format.
-This effectively means the git repo installed from is dirty, since the node-and-date version scheming only postfixes this string if the repo is dirty. :param s: This is the version tag obtained from importlib.metadata.version(module)
+This effectively means the git repo installed from is dirty, since the node-and-date version scheming only postfixes this string if the repo is dirty.
+:param s: This is the version tag obtained from importlib.metadata.version(module)
 :return: Boolean. True if the date format is present. This is equivalent to is_dirty() returning True.
 False if date format is not present. This is equivalent to is_dirty() returning False.
 """
@@ -86,8 +93,6 @@ def check_git_dirty_repo_tag(s):
 
 
 def pretty_print_table(data):
-    # is_dirty()? underscore represents a function name, but Installed_Version underscore represents a space.
-    # This is formatted this way because we use stripping functions for the table read function
     headers = ["Module", "Imported", "Installed_Version", "Branch", "is_dirty()?"]
     widths = [14, 8, 20, 32, 11]
 
@@ -106,3 +111,25 @@ def pretty_print_table(data):
             str(data["is_dirty()?"][i]),
         ]
         print(format_row(row))
+
+
+def write_pretty_table_to_file(file_path, data):
+    headers = ["Module", "Imported", "Installed_Version", "Branch", "is_dirty()?"]
+    widths = [14, 8, 20, 32, 11]
+
+    def format_row(row_items):
+        return " ".join(str(item).ljust(width) for item, width in zip(row_items, widths))
+
+    with open(file_path, "w") as f:
+        f.write(format_row(headers) + "\n")
+        f.write(format_row(["-" * w for w in widths]) + "\n")
+
+        for i in range(len(data["Module"])):
+            row = [
+                data["Module"][i],
+                str(data["Imported"][i]),
+                data["Installed_Version"][i],
+                data["Branch"][i],
+                str(data["is_dirty()?"][i]),
+            ]
+            f.write(format_row(row) + "\n")
