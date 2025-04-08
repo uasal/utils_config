@@ -4,7 +4,7 @@ import subprocess
 import types
 from datetime import datetime
 
-DEFAULT_MODULES = ["config_stp", "config_um", "config_stp_wcc", "config_stp_esc", "etc_wcc"]
+DEFAULT_MODULES = ["config_stp", "config_um", "config_stp_wcc", "config_stp_esc", "etc_wcc", "etc_esc"]
 
 
 def imports(g_imports):
