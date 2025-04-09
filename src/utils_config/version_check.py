@@ -74,7 +74,7 @@ def check_imports_and_versions(g_imports, modules_to_check=None, verbose=False, 
         data["is_dirty()?"].append(check_git_dirty_repo_tag(version))
 
     pretty_table = generate_pretty_table(data)
-    
+
     print(pretty_table)
 
     if output_file:
@@ -109,7 +109,7 @@ def find_git_root(path):
 
 
 def get_git_branch(git_dir):
-     """
+    """
     Gets the current Git branch name for a given Git repository directory.
 
     Parameters
@@ -133,13 +133,14 @@ def get_git_branch(git_dir):
     except subprocess.CalledProcessError:
         return "Unknown"
 
+
 def check_git_dirty_repo_tag(s):
     """
     Determines if a version string ends in a 'dYYYYMMDD' tag, which indicates a dirty Git state.
 
     Parameters
     ----------
-    version_str : str 
+    version_str : str
         A version string, typically from importlib.metadata.version(module)
 
     Returns
@@ -167,11 +168,11 @@ def generate_pretty_table(data):
 
     Returns
     -------
-    str 
+    str
         A formatted multi-line string displaying the data as a table.
     """
     headers = ["Module", "Imported", "Installed_Version", "Branch", "is_dirty()?"]
-    
+
     # Put rows (including header) into column-wise lists
     columns = [
         [headers[0]] + data["Module"],
@@ -188,10 +189,7 @@ def generate_pretty_table(data):
         return " ".join(str(item).ljust(width) for item, width in zip(row_items, widths))
 
     # Header and separator line
-    lines = [
-        format_row(headers),
-        format_row(["-" * w for w in widths])
-    ]
+    lines = [format_row(headers), format_row(["-" * w for w in widths])]
 
     # Data rows
     num_rows = len(data["Module"])
@@ -206,4 +204,3 @@ def generate_pretty_table(data):
         lines.append(format_row(row))
 
     return "\n".join(lines)
-
