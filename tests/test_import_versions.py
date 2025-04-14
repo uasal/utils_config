@@ -1,7 +1,7 @@
 import importlib
-import types
 import os
 import subprocess
+import types
 from datetime import datetime
 
 import pytest
@@ -11,25 +11,19 @@ def imports(g_imports):
     module_list = []
     for name, val in g_imports:
         if isinstance(val, types.ModuleType):
-            module_list.append(val.__name__.split('.')[0])
+            module_list.append(val.__name__.split(".")[0])
     return module_list
 
 
 def check_imports_and_versions(g_imports, modules_to_check, output_file, verbose=False):
     imported_modules = imports(g_imports)
 
-    data = {
-        "Module": [],
-        "Imported": [],
-        "Installed_Version": [],
-        "Branch": [],
-        "is_dirty()?": []
-    }
+    data = {"Module": [], "Imported": [], "Installed_Version": [], "Branch": [], "is_dirty()?": []}
 
     for module in modules_to_check:
         imported = module in imported_modules
-        version = 'Not_Installed'
-        branch = 'N/A'
+        version = "Not_Installed"
+        branch = "N/A"
 
         if importlib.util.find_spec(module) is not None:
             try:
@@ -73,7 +67,7 @@ def get_git_branch(git_dir):
             ["git", "-C", git_dir, "rev-parse", "--abbrev-ref", "HEAD"],
             capture_output=True,
             text=True,
-            check=True
+            check=True,
         )
         return result.stdout.strip()
     except subprocess.CalledProcessError:
@@ -81,24 +75,24 @@ def get_git_branch(git_dir):
 
 
 def check_git_dirty_repo_tag(s):
-    if len(s) < 9 or s[-9] != 'd':
+    if len(s) < 9 or s[-9] != "d":
         return False
     date_str = s[-8:]
     try:
-        datetime.strptime(date_str, '%Y%m%d')
+        datetime.strptime(date_str, "%Y%m%d")
         return True
     except ValueError:
         return False
 
 
 def write_table(file_path, data):
-    with open(file_path, 'w') as f:
-        import_string = [str(b) for b in data['Imported']]
-        is_dirty_string = [str(b) for b in data['is_dirty()?']]
-        branch_string = [str(b) for b in data['Branch']]
-        mod_list = pad_strings(data['Module'], "Module")
+    with open(file_path, "w") as f:
+        import_string = [str(b) for b in data["Imported"]]
+        is_dirty_string = [str(b) for b in data["is_dirty()?"]]
+        branch_string = [str(b) for b in data["Branch"]]
+        mod_list = pad_strings(data["Module"], "Module")
         imported_list = pad_strings(import_string, "Imported")
-        installed_list = pad_strings(data['Installed_Version'], "Installed_Version")
+        installed_list = pad_strings(data["Installed_Version"], "Installed_Version")
         branch_list = pad_strings(branch_string, "Branch")
         is_dirty_list = pad_strings(is_dirty_string, "is_dirty()?")
 
@@ -112,7 +106,7 @@ def pad_strings(strings, header):
     strings_with_header = [header] + strings
     max_length = max(len(s) for s in strings_with_header)
     padded_list = [s.ljust(max_length) for s in strings_with_header]
-    padded_list.insert(1, '-' * max_length)
+    padded_list.insert(1, "-" * max_length)
     return padded_list
 
 
@@ -120,11 +114,12 @@ def pad_strings(strings, header):
 # 🧪 Pytest Regression Test
 # =======================
 
-@pytest.mark.parametrize("modules_to_check", [
-    ['config_stp', 'config_um', 'config_stp_wcc', 'config_stp_esc', 'etc_wcc']
-])
+
+@pytest.mark.parametrize(
+    "modules_to_check", [["config_stp", "config_um", "config_stp_wcc", "config_stp_esc", "etc_wcc"]]
+)
 def test_check_imports_and_versions(modules_to_check):
-    output_file = os.path.join(os.path.dirname(__file__), 'expected_outputs', 'module_versions.txt')
+    output_file = os.path.join(os.path.dirname(__file__), "expected_outputs", "module_versions.txt")
 
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
@@ -143,4 +138,3 @@ def test_check_imports_and_versions(modules_to_check):
 
     for dirty_flag in data["is_dirty()?"]:
         assert isinstance(dirty_flag, bool)
-
