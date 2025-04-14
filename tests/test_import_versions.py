@@ -110,11 +110,6 @@ def pad_strings(strings, header):
     return padded_list
 
 
-# =======================
-# 🧪 Pytest Regression Test
-# =======================
-
-
 @pytest.mark.parametrize(
     "modules_to_check", [["config_stp", "config_um", "config_stp_wcc", "config_stp_esc", "etc_wcc"]]
 )
