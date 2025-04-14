@@ -2,7 +2,7 @@ import os
 import re
 import warnings
 from pathlib import Path
-from typing import Any, List, Union
+from typing import Any, List, Optional, Union
 
 import astropy.units as u
 import toml
@@ -69,18 +69,20 @@ class ConfigLoader:
 
         return self.config_data
 
-    def _expand_env_vars(self, config: Any, path: list[str] = None) -> Any:
+    def _expand_env_vars(self, config: Any, path: Optional[list[str]] = None) -> Any:
         """Recursively expands environment variables in all string values.
         Produces warning if env variable not defined in user's environment.
 
         Args:
-            config (Any): Loaded configuration structure (dict, list, str, etc.).
+            config (Any): The loaded config subtree.
+            path (Optional[list[str]]): Internal path tracker for nested keys.
 
         Returns:
             Any: Same structure with all string values processed via os.path.expandvars.
         """
 
-        path = path or []
+        if path is None:
+            path = []
 
         if isinstance(config, dict):
             return {k: self._expand_env_vars(v, path + [k]) for k, v in config.items()}
@@ -97,12 +99,11 @@ class ConfigLoader:
                     warnings.warn(
                         f"Environment variable '${var_name}' referenced by '{location}' is not set so '{config}' will not expand. "
                         f"Please set environment variable if using '{location}' and call this method again after having done so.  "
-                        f"Reference the README for instructions on setting up an environment variable." ,
-                        stacklevel=3
+                        f"Reference the README for instructions on setting up an environment variable.",
+                        stacklevel=3,
                     )
             return os.path.expandvars(config)
-        else:
-            return config
+        return config
 
     def _process_config(self, config: dict[str, Any]) -> dict[str, Any]:
         """Processes the config data based on the selected mode.
@@ -119,6 +120,7 @@ class ConfigLoader:
             return self._parse_units(config, values_only=False)
         elif self.mode == "unitless":
             return self._parse_units(config, values_only=True)
+        return config  # default to raw
 
     def _parse_units(self, config: Any, values_only: bool) -> Any:
         """Recursively processes the configuration to parse or remove units.
@@ -189,4 +191,3 @@ class ConfigLoader:
             _check_units(config, [], file_key)
 
         return True if not errors else errors
-
