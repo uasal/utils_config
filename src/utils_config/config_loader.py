@@ -1,5 +1,6 @@
 import os
 import re
+import warnings
 from pathlib import Path
 from typing import Any, List, Union
 
@@ -68,8 +69,9 @@ class ConfigLoader:
 
         return self.config_data
 
-    def _expand_env_vars(self, config: Any) -> Any:
+    def _expand_env_vars(self, config: Any, path: list[str] = None) -> Any:
         """Recursively expands environment variables in all string values.
+        Produces warning if env variable not defined in user's environment.
 
         Args:
             config (Any): Loaded configuration structure (dict, list, str, etc.).
@@ -77,11 +79,27 @@ class ConfigLoader:
         Returns:
             Any: Same structure with all string values processed via os.path.expandvars.
         """
+
+        path = path or []
+
         if isinstance(config, dict):
-            return {k: self._expand_env_vars(v) for k, v in config.items()}
+            return {k: self._expand_env_vars(v, path + [k]) for k, v in config.items()}
+
         elif isinstance(config, list):
-            return [self._expand_env_vars(v) for v in config]
+            return [self._expand_env_vars(v, path + [f"[{i}]"]) for i, v in enumerate(config)]
+
         elif isinstance(config, str):
+            unresolved = re.findall(r"\$(\w+)|\$\{(\w+)\}", config)
+            for match in unresolved:
+                var_name = match[0] or match[1]
+                if var_name and var_name not in os.environ:
+                    location = " -> ".join(path)
+                    warnings.warn(
+                        f"Environment variable '${var_name}' referenced by '{location}' is not set so '{config}' will not expand. "
+                        f"Please set environment variable if using '{location}' and call this method again after having done so.  "
+                        f"Reference the README for instructions on setting up an environment variable." ,
+                        stacklevel=3
+                    )
             return os.path.expandvars(config)
         else:
             return config
