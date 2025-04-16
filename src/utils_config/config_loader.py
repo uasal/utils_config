@@ -18,13 +18,19 @@ class ConfigLoader:
     def __init__(self, base_dir: str, mode: str = "raw", recursive: bool = False):
         """Initializes the ConfigLoader.
 
-        Args:
-            base_dir (str): Directory to search for .toml config files.
-            mode (str): One of ['raw', 'unitless', 'parsed'].
-            recursive (bool): If True, searches subdirectories for .toml files.
+        Parameters
+        ----------
+        base_dir : str
+            Directory to search for .toml config files.
+        mode : str
+            One of ['raw', 'unitless', 'parsed'].
+        recursive : bool
+            If True, searches subdirectories for .toml files.
 
-        Raises:
-            ValueError: If mode is not one of the allowed values.
+        Raises
+        ------
+        ValueError
+            If mode is not one of the allowed values.
         """
         self.base_dir = Path(base_dir).resolve()
         self.mode = mode.lower()
@@ -39,12 +45,17 @@ class ConfigLoader:
 
         Environment variables in string values are automatically expanded.
 
-        Returns:
-            dict[str, dict[str, Any]]: Dictionary of processed config data keyed by filename.
+        Returns
+        -------
+        dict[str, dict[str, Any]]
+            Dictionary of processed config data keyed by filename.
 
-        Raises:
-            FileNotFoundError: If no .toml files are found.
-            ValueError: If any file fails to parse.
+        Raises
+        ------
+        FileNotFoundError
+            If no .toml files are found.
+        ValueError
+            If any file fails to parse.
         """
         search_pattern = "**/*.toml" if self.recursive else "*.toml"
         toml_files = list(self.base_dir.glob(search_pattern))
@@ -73,14 +84,18 @@ class ConfigLoader:
         """Recursively expands environment variables in all string values.
         Produces warning if env variable not defined in user's environment.
 
-        Args:
-            config (Any): The loaded config subtree.
-            path (Optional[list[str]]): Internal path tracker for nested keys.
+        Parameters
+        ----------
+        config : Any
+            The loaded config subtree.
+        path : Optional[list[str]])
+            Internal path tracker for nested keys.
 
-        Returns:
-            Any: Same structure with all string values processed via os.path.expandvars.
+        Returns
+        -------
+        Any
+            Same structure with all string values processed via os.path.expandvars.
         """
-
         if path is None:
             path = []
 
@@ -98,7 +113,7 @@ class ConfigLoader:
                     location = " -> ".join(path)
                     warnings.warn(
                         f"Environment variable '${var_name}' referenced by '{location}' is not set so '{config}' will not expand. "
-                        f"Please set environment variable if using '{location}' and call this method again after having done so.  "
+                        f"If using '{location}' please set '${var_name}' and call this method again.  "
                         f"Reference the README for instructions on setting up an environment variable.",
                         stacklevel=3,
                     )
@@ -108,11 +123,15 @@ class ConfigLoader:
     def _process_config(self, config: dict[str, Any]) -> dict[str, Any]:
         """Processes the config data based on the selected mode.
 
-        Args:
-            config (dict): The raw config data.
+        Parameters
+        ----------
+        config : dict
+            Raw config data.
 
-        Returns:
-            dict: Processed config data (parsed, unitless, or raw).
+        Returns
+        -------
+        dict
+            Processed config data (parsed, unitless, or raw).
         """
         if self.mode == "raw":
             return config
@@ -125,12 +144,17 @@ class ConfigLoader:
     def _parse_units(self, config: Any, values_only: bool) -> Any:
         """Recursively processes the configuration to parse or remove units.
 
-        Args:
-            config (Any): Config subtree to process.
-            values_only (bool): If True, return only the numerical value without units.
+        Parameters
+        ----------
+        config : Any
+            Config subtree to process.
+        values_only : bool
+            If True, return only the numerical value without units.
 
-        Returns:
-            Any: Transformed config subtree.
+        Returns
+        -------
+        Any
+            Transformed config subtree.
         """
         if isinstance(config, dict):
             return {key: self._parse_units(value, values_only) for key, value in config.items()}
@@ -146,12 +170,17 @@ class ConfigLoader:
 
         Recognizes values like '10e-3arcsecond' or '0.024Kelvin/hour'.
 
-        Args:
-            value (str): Input string to parse.
-            values_only (bool): If True, return only float; otherwise return dict with 'value' and 'unit'.
+        Parameters
+        ----------
+        value : str
+            Input string to parse.
+        values_only : bool
+            If True, return only float; otherwise return dict with 'value' and 'unit'.
 
-        Returns:
-            Union[str, float, dict]: Parsed result or original string if no match.
+        Returns
+        -------
+        Union[str, float, dict]
+            Parsed result or original string if no match.
         """
         match = re.match(r"([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)([a-zA-Z/%µ]+$)", value.strip())
         if match:
@@ -164,8 +193,10 @@ class ConfigLoader:
 
         Walks through self.config_data and checks if every unit string is valid.
 
-        Returns:
-            Union[bool, List[str]]: True if all units are valid; otherwise a list of error messages.
+        Returns
+        -------
+        bool | List[str]
+            True if all units are valid; otherwise a list of error messages.
         """
         errors = []
 
