@@ -43,9 +43,15 @@ def check_imports_and_versions(g_imports, modules_to_check=None, verbose=False, 
     -------
     str
         A pretty-printed table as a string showing the inspection results.
+        | exception if modules_to_check is not a list
     """
     if modules_to_check is None:
         modules_to_check = DEFAULT_MODULES
+
+    try:
+        assert type(modules_to_check) is list, "modules_to_check is not a list"
+    except AssertionError as e:
+        return print(f"Assertion failed: {e}")
 
     imported_modules = imports(g_imports)
 
