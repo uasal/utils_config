@@ -10,7 +10,7 @@ from utils_config.config_loader import ConfigLoader
 @pytest.fixture
 def sample_toml_file():
     """Create a temporary TOML file for testing"""
-    toml_content = {"section": {"param1": "value1", "param2": 42, "param3": 3.14}}
+    toml_content = {"section": {"param1": "value1", "param2": 42, "param3": 3.14, "param4": '6.14m'}}
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".toml") as tmp_file:
         tmp_file.write(toml.dumps(toml_content).encode("utf-8"))
@@ -35,3 +35,17 @@ def test_config_loader(sample_toml_file):
     assert config_data[filename]["section"]["param1"] == "value1"
     assert config_data[filename]["section"]["param2"] == 42
     assert config_data[filename]["section"]["param3"] == 3.14
+    assert config_data[filename]["section"]["param4"] == '6.14m'
+
+    print('\n HERE! \n')
+    loader = ConfigLoader(base_dir=base_dir, mode="parsed")
+    config_data = loader.load_configs()
+
+    # Extract file name to match expected structure
+    filename = Path(sample_toml_file).stem
+
+    assert filename in config_data, f"Expected {filename} in loaded config"
+    assert config_data[filename]["section"]["param1"] == "value1"
+    assert config_data[filename]["section"]["param2"] == {'value': 42, 'unit': None}
+    assert config_data[filename]["section"]["param3"] == {'value': 3.14, 'unit': None}
+    assert config_data[filename]["section"]["param4"] == {'value': 6.14, 'unit': 'm'}
